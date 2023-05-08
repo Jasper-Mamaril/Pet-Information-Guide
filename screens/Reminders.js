@@ -4,15 +4,6 @@ import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, FlatList, 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import * as Device from 'expo-device';
-import * as Notifications from 'expo-notifications';
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
-});
 
 
 import axios from 'axios';
@@ -24,27 +15,6 @@ import Edit from '../screens/ReminderEdit';
 import ReminderAdd from '../screens/ReminderAdd';
 
 function ReminderListScreen({navigation}) {
-  const [expoPushToken, setExpoPushToken] = useState('');
-  const [notification, setNotification] = useState(false);
-  const notificationListener = useRef();
-  const responseListener = useRef();
-
-  useEffect(() => {
-    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
-
-    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-      setNotification(notification);
-    });
-
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log(response);
-    });
-
-    return () => {
-      Notifications.removeNotificationSubscription(notificationListener.current);
-      Notifications.removeNotificationSubscription(responseListener.current);
-    };
-  }, []);
   
   const [date, setDate] = useState(dayjs());
 
@@ -96,27 +66,6 @@ function ReminderListScreen({navigation}) {
             <Text style={styles.time}>{date.format("hh:mm:ss A")}</Text>
           </View>
         <View style={styles.card}>     
-
-        <View
-      style={{
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'space-around',
-      }}>
-      <Text style={{ display: 'none' }}>Your expo push token: {expoPushToken}</Text>
-      <View style={{ alignItems: 'center', justifyContent: 'center',display: 'none', }}>
-        <Text>Title: {notification && notification.request.content.title} </Text>
-        <Text>Body: {notification && notification.request.content.body}</Text>
-        <Text>Data: {notification && JSON.stringify(notification.request.content.data)}</Text>
-      </View>
-      <Button
-        title="push notification example"
-        onPress={async () => {
-          await schedulePushNotification();
-        }}
-      />
-      
-    </View>
 
 
         <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -175,56 +124,6 @@ function ReminderListScreen({navigation}) {
   //   ];
   //   setUsers(users);
   // }, []);
-
-async function schedulePushNotification() {
-  const hour = 23; // must be between 0-23
-  const minute = 32;
-  const petname = "Mayumi";
-  const label = "Meal";
-    await Notifications.scheduleNotificationAsync({
-    content: {
-      title: "Ping!",
-      body: 'Time for '+petname+'\'s '+label+'',
-      // data: { data: 'goes here' },
-    },
-    trigger: { 
-      hour: hour, minute: minute, repeats: false
-  }
-  });
-    
-}
-
-async function registerForPushNotificationsAsync() {
-  let token;
-
-  if (Platform.OS === 'android') {
-    await Notifications.setNotificationChannelAsync('default', {
-      name: 'default',
-      importance: Notifications.AndroidImportance.MAX,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#FF231F7C',
-    });
-  }
-
-  if (Device.isDevice) {
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
-    let finalStatus = existingStatus;
-    if (existingStatus !== 'granted') {
-      const { status } = await Notifications.requestPermissionsAsync();
-      finalStatus = status;
-    }
-    if (finalStatus !== 'granted') {
-      alert('Failed to get push token for push notification!');
-      return;
-    }
-    token = (await Notifications.getExpoPushTokenAsync()).data;
-    console.log(token);
-  } else {
-    // alert('Must use physical device for Push Notifications');
-  }
-
-  return token;
-}
 
 export default function Reminders() {
   const RemindersStack = createNativeStackNavigator();

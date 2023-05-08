@@ -1,10 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, Button, FlatList } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {DateTimePicker, DateTimePickerAndroid} from '@react-native-community/datetimepicker';
 import SelectDropdown from 'react-native-select-dropdown';
 import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-list';
+
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 import axios from 'axios';
 const baseURL = 'http://192.168.1.26/Ping/restAPI/';
@@ -31,45 +41,30 @@ const pet = [
 
 
 
-// export const TimePicker = () => {
-//   const [date, setTime] = useState(new Date());
-//   date.setSeconds(0);
-  
-//   const onChange = (event, selectedDate) => {
-//     const currentDate = selectedDate;
-//     setTime(currentDate);
-//   };
-  
-//   const showMode = (currentMode) => {
-//     DateTimePickerAndroid.open({
-//       value: date,
-//       display: "spinner",
-//       onChange,
-//       mode: currentMode,
-//       is24Hour: false,
-
-//     });
-//   };
-
-//   const showTimepicker = () => {
-//     showMode('time');
-//   };
-
-//   return (
-//     <View style={styles.timepickerContainer}>
-//           <Text>Reminder Time</Text>
-//         <View style={styles.timepicker}>
-//                   <TouchableOpacity style={styles.timepickerButton} onPress={showTimepicker}>
-//                     <Text style={styles.timePickerbuttonTxt}>{date.toLocaleTimeString()}</Text>
-//                   </TouchableOpacity> 
-//         </View>
-//     </View>
-    
-//   );
-// };
-
 function AddReminderScreen({navigation}) {
   // const [today, setDate] = useState(dayjs());
+
+  const [expoPushToken, setExpoPushToken] = useState('');
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+
+    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+      setNotification(notification);
+    });
+
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log(response);
+    });
+
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
 
   const [selectedPet, setPetname] = useState();
   const [selectedDay, setDay] = useState();
@@ -110,6 +105,25 @@ function AddReminderScreen({navigation}) {
   const [petnameList, setPetnameList] = useState([]);
   listOfNames = []
 
+  
+
+  const schedulePushNotification = async () => {
+    const hour = date.getHours(); // must be between 0-23
+    const minute = date.getMinutes();
+    const petname = "Mayumi";
+    const label = "Meal";
+      await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Ping!",
+        body: 'Time for '+selectedPet+'\'s '+selectedlabel+'',
+        sound: true,
+        data: { data: 'goes here' },
+      },
+      trigger: { 
+        hour: hour, minute: minute, repeats: true
+    }
+    });
+  }
 
   const fetchPetname = async () => {
     try {
@@ -138,6 +152,11 @@ function AddReminderScreen({navigation}) {
 
     }
   };
+
+  const combine = async () => {
+    onSubmitFormHandler();
+    schedulePushNotification();
+  }
 
   const onSubmitFormHandler = async (event) => {
     console.log(selectedDay)
@@ -181,6 +200,27 @@ function AddReminderScreen({navigation}) {
             <Text style={styles.time}>{today.format("hh:mm:ss A")}</Text>
           </View> */}
         <View style={styles.card}>     
+
+        <View
+      style={{
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'space-around',display: 'none',
+      }}>
+      <Text style={{ display: 'none' }}>Your expo push token: {expoPushToken}</Text>
+      <View style={{ alignItems: 'center', justifyContent: 'center',display: 'none', }}>
+        <Text>Title: {notification && notification.request.content.title} </Text>
+        <Text>Body: {notification && notification.request.content.body}</Text>
+        <Text>Data: {notification && JSON.stringify(notification.request.content.data)}</Text>
+      </View>
+      <Button
+        title="push notification example"
+        onPress={async () => {
+          await schedulePushNotification();
+        }}
+      />
+      
+    </View>
          
 
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -232,7 +272,7 @@ function AddReminderScreen({navigation}) {
                     </View>
 
                     <View style={styles.addButtonContainer}>
-                      <TouchableOpacity style={styles.addButton} onPress={onSubmitFormHandler}><Text style={styles.addbuttonTxt}>ADD</Text></TouchableOpacity>
+                      <TouchableOpacity style={styles.addButton} onPress={combine}><Text style={styles.addbuttonTxt}>ADD</Text></TouchableOpacity>
                     </View>
 
               </View>
@@ -242,6 +282,38 @@ function AddReminderScreen({navigation}) {
       </View>
 
   );
+}
+
+async function registerForPushNotificationsAsync() {
+  let token;
+
+  if (Platform.OS === 'android') {
+    await Notifications.setNotificationChannelAsync('default', {
+      name: 'default',
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#FF231F7C',
+    });
+  }
+
+  if (Device.isDevice) {
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      alert('Failed to get push token for push notification!');
+      return;
+    }
+    token = (await Notifications.getExpoPushTokenAsync()).data;
+    console.log(token);
+  } else {
+    // alert('Must use physical device for Push Notifications');
+  }
+
+  return token;
 }
 
 export default function ReminderAdd() {

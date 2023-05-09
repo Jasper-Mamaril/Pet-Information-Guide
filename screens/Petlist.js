@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useFocusEffect } from "@react-navigation/native";
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TouchableOpacity, Image, TextInput, ScrollView, RefreshControl, FlatList } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
@@ -22,10 +23,17 @@ function PetlistScreen({navigation}) {
   //   { id: 2, name: 'Aya' },
   //   { id: 3, name: 'Cloud' },
   // ];
- useEffect(() => {
-    fetchPets();
-    // setPets(petslist);
-  }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchPets();
+      // console.log("naload");
+      return () => {
+        fetchPets();
+        // console.log("umalis");
+      };
+    }, [])
+  );
 
   const fetchPets = async () => {
     try {
@@ -46,13 +54,26 @@ function PetlistScreen({navigation}) {
     }
   };
 
-  const onRefresh = useCallback(() => {
-    fetchPets();
-    setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 2000);
-  }, []);
+  const deletePet = async () => {
+    try {
+      const response = await axios.post(`${baseURL}deletePet`, {
+
+      });
+      if (response.status === 200 || refreshing === true) {
+        // alert(response.data.payload[0].cooking_time);
+        // console.log(response.data.payload[0]);
+        setPets(response.data.payload);
+        console.log(pets)
+
+      } else {
+        throw new Error("An error has occurred");
+      }
+    } catch (error) {
+
+    }
+  };
+
+
   
   return (
     <View style={styles.container}>
@@ -66,9 +87,6 @@ function PetlistScreen({navigation}) {
           <ScrollView 
           style={styles.scrollView} 
           showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
           > 
 
             {/* iteration */}
@@ -89,7 +107,7 @@ function PetlistScreen({navigation}) {
                             <TouchableOpacity key={item.id} style={styles.petListingButton} onPress={() => {navigation.navigate('Pet Profile',item)}}>
                               <View style={styles.itemFlex}>
                                       <Text style={styles.buttonTxt}>{item.petname}</Text>
-                                  <TouchableOpacity>
+                                  <TouchableOpacity onPress={deletePet}>
                                       <Image style={styles.deleteIcon} source={require('../assets/deleteIcon.png')} />
                                   </TouchableOpacity>
                               </View>

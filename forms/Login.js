@@ -79,6 +79,7 @@ function LoginScreen({navigation}) {
                         <View style={styles.inputField}>
                           <TextInput
                             style={styles.input}
+                            secureTextEntry={true}
                             onChangeText={onChangePass}
                             value={password}
                             placeholder="Password"/>
@@ -160,7 +161,7 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     position: 'absolute',
-    top: 150,
+    top: 140,
   },
   loginIcon: {
     width: 200,
@@ -168,7 +169,7 @@ const styles = StyleSheet.create({
   },
   card: {
     position: 'absolute',
-    top: 400,
+    top: 390,
     width: '80%',
   },
   inputFieldSection: {

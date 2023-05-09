@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useFocusEffect } from "@react-navigation/native";
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, Button, FlatList } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {DateTimePicker, DateTimePickerAndroid} from '@react-native-community/datetimepicker';
 import SelectDropdown from 'react-native-select-dropdown';
 import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-list';
+
+import Reminders from './Reminders';
 
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
@@ -16,6 +19,16 @@ Notifications.setNotificationHandler({
   }),
 });
 
+  // export const dismiss = async () => {
+  //   Notifications.setNotificationHandler({
+  //     handleNotification: async () => ({
+  //       shouldShowAlert: false,
+  //       shouldPlaySound: false,
+  //       shouldSetBadge: false,
+  //     })
+  //   });
+  // }
+
 import axios from 'axios';
 const baseURL = 'http://192.168.1.26/Ping/restAPI/';
 
@@ -26,14 +39,14 @@ const label = [
   {key:'1',value:'Meal'},
   {key:'2',value:'Meds'},
   {key:'3',value:'Bath'},
-  {key:'4',value:'Play'},
+  {key:'4',value:'Playtime'},
   {key:'5',value:'Exercise'},
 ];
 const day = [
   {key:'1', value:'Yes'},
   {key:'2', value:'No'},
 ];
-const pet = [
+const list = [
   {key:'1', value:'Kim'},
   {key:'2', value:'Ant'},
   {key:'3', value:'Jmie'},
@@ -92,20 +105,20 @@ function AddReminderScreen({navigation}) {
     showMode('time');
   };
  
-  
-  useEffect(() =>{
-    // const interval = setInterval(()=> {
-    //   setDate(dayjs());
-    // }, 1000 * 1);
 
-    // return () => clearInterval(interval);
-    fetchPetname();
-  }, []) 
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchPetname();
+      // console.log("naload");
+      return () => {
+        fetchPetname();
+        // console.log("umalis");
+      };
+    }, [])
+  );
 
   const [petnameList, setPetnameList] = useState([]);
   listOfNames = []
-
-  
 
   const schedulePushNotification = async () => {
     const hour = date.getHours(); // must be between 0-23
@@ -182,7 +195,7 @@ function AddReminderScreen({navigation}) {
         // storeUserID(response.data.payload.id);
 
         alert("Reminder Added!");
-        // return navigation.navigate(Reminders);
+        return navigation.navigate(Reminders);
 
       } else {
         throw new Error("An error has occurred");
@@ -307,8 +320,8 @@ async function registerForPushNotificationsAsync() {
       alert('Failed to get push token for push notification!');
       return;
     }
-    token = (await Notifications.getExpoPushTokenAsync()).data;
-    console.log(token);
+    // token = (await Notifications.getExpoPushTokenAsync()).data;
+    // console.log(token);
   } else {
     // alert('Must use physical device for Push Notifications');
   }

@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import About from '../screens/About';
+import Login from '../forms/Login';
 
 function SettingsScreen({navigation}) {
   return (
@@ -28,7 +29,7 @@ function SettingsScreen({navigation}) {
               </View>
 
               <View style={styles.aboutButtonContainer}>
-                <TouchableOpacity style={styles.aboutButton}>
+                <TouchableOpacity style={styles.aboutButton} onPress={() => navigation.navigate('Login Form')}>
                   <Text style={styles.aboutButtonTxt}>Logout</Text>
                 </TouchableOpacity>
               </View>
@@ -64,16 +65,15 @@ const styles = StyleSheet.create({
   aboutButtonContainer: {
     marginTop: 10,
     marginBottom: 40,
-    alignItems: 'center',
+    // alignItems: 'center',
     postion: 'absolute',
     top: 40,
-    left: -100,
-
+    left: 0,
   },
   aboutButton: {
     backgroundColor: '#F98E6A',
     padding: 10,
-    width: '40%',
+    width: '50%',
     alignItems: 'center',
     borderRadius: 20,
   },

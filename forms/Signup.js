@@ -91,6 +91,7 @@ export default function SignupScreen({navigation}) {
                             style={styles.input}
                             onChangeText={onChangePass}
                             value={password}
+                            secureTextEntry={true}
                             placeholder="Password"/>
                         </View>
                     </View>

@@ -66,6 +66,10 @@ switch($_SERVER['REQUEST_METHOD']){
                 echo json_encode($global->update('petinfo_tbl',$data, NULL));
             break;
 
+            case 'deletePet':
+                echo json_encode($global->delete('petinfo_tbl',$data, NULL));
+            break;
+
 
 
             case 'addImagefile':

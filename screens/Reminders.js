@@ -1,15 +1,20 @@
+import React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, FlatList, Button} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
+import { useFocusEffect } from "@react-navigation/native";
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
 
 import axios from 'axios';
 const baseURL = 'http://192.168.1.26/Ping/restAPI/';
 
 import dayjs from 'dayjs';
+
+import dismissAllNotificationsAsync from 'expo-notifications';
 
 import Edit from '../screens/ReminderEdit';
 import ReminderAdd from '../screens/ReminderAdd';
@@ -29,9 +34,20 @@ function ReminderListScreen({navigation}) {
   // pull data
   const [alarms, setReminder] = useState([]);
 
-  useEffect(() => {
-    fetchReminder();
-  }, []);
+  // useEffect(() => {
+    
+  // }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchReminder();
+      // console.log("naload");
+      return () => {
+        fetchReminder();
+        // console.log("umalis");
+      };
+    }, [])
+  );
 
   const fetchReminder = async () => {
     try {
@@ -51,7 +67,9 @@ function ReminderListScreen({navigation}) {
     }
   };
 
-  
+  // const cancel = async () => {
+  //   await Notifications.cancelScheduledNotificationAsync(identifier);
+  // }
 
   return (
     <View style={styles.container}>
@@ -73,14 +91,14 @@ function ReminderListScreen({navigation}) {
             
                 {/* iteration*/}
                 <View style={styles.wholeList}>
-                <FlatList navigation={navigation} scrollEnabled={false} data={alarms} keyExtractor={item=> item.id.toString()} renderItem={({item}) => {
+                <FlatList navigation={navigation} scrollEnabled={false} data={alarms} keyExtractor={item=> item.id} renderItem={({item}) => {
                 return (
                   // <Text style={styles.paragraph}>{user.id} - {user.name}</Text>
 
                   <View style={styles.inputButtonBg}>
                   <View style={styles.itemFlex}>
                           <View style={styles.iconPosition}>
-                            <TouchableOpacity key={item.id} onPress={() => navigation.navigate('Edit Reminder')}>
+                            <TouchableOpacity key={item.id} onPress={() => navigation.navigate('Edit Reminder', item)}>
                               <Image style={styles.editIcon} source={require('../assets/editIcon.png')} />
                             </TouchableOpacity>
                           </View>
@@ -88,14 +106,17 @@ function ReminderListScreen({navigation}) {
                                     <View style={styles.inputButton}>
                                           <View style={styles.itemFlex}>
                                             <View style={styles.itemFlex}>
-                                              <Text style={styles.inputTxt}>{item.time}</Text>
+                                              <Text style={styles.inputTxt}>{item.timeset}</Text>
                                             </View>
                                             <Text style={styles.descTxt}>{item.petname}</Text>
-                                              <TouchableOpacity>
-                                                <Image style={styles.deleteIcon} source={require('../assets/deleteIcon.png')} />
+                                            <TouchableOpacity >
+                                              <TouchableOpacity onPress={Notifications.cancelAllScheduledNotificationsAsync}>
+                                                  <Image style={styles.deleteIcon} source={require('../assets/deleteIcon.png')} />
                                               </TouchableOpacity>
+                                            </TouchableOpacity>
+                                              
                                           </View>
-                                        <Text style={styles.descTxt}>{item.repDay}, {item.label}</Text>
+                                        <Text style={styles.descTxt}>Repeat:{item.repDay}, {item.label}</Text>
                                       
                                     </View>
                                 </View>
@@ -167,7 +188,7 @@ const styles = StyleSheet.create({
   },
   timeContainer: {
     position: 'absolute',
-    top: 140,
+    top: 125,
   },
   time: {
     fontSize: 64,

@@ -39,7 +39,7 @@ function AddNewPet({navigation}) {
           // storeUserID(response.data.payload.id);
           
           alert("New Pet Added!");
-          return navigation.navigate('Add New Pet');
+          return navigation.navigate('My Pets');
   
         } else {
           throw new Error("An error has occurred");
@@ -48,8 +48,6 @@ function AddNewPet({navigation}) {
         alert(error);
       }
     };
-
-    
 
     return (
       <View style={styles.container}>

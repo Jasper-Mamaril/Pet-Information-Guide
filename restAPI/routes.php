@@ -67,7 +67,11 @@ switch($_SERVER['REQUEST_METHOD']){
             break;
 
             case 'deletePet':
-                echo json_encode($global->delete('petinfo_tbl',$data, NULL));
+                echo json_encode($global->delete('petinfo_tbl',"id = '$req[1]'"));
+            break;
+
+            case 'deleteReminder':
+                echo json_encode($global->delete('reminders_tbl',"id = '$req[1]'"));
             break;
 
 

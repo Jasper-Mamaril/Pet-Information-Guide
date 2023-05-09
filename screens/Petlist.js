@@ -54,9 +54,9 @@ function PetlistScreen({navigation}) {
     }
   };
 
-  const deletePet = async () => {
+  const deletePet = async (pet_id) => {
     try {
-      const response = await axios.post(`${baseURL}deletePet`, {
+      const response = await axios.post(`${baseURL}deletePet/${pet_id}`, {
 
       });
       if (response.status === 200 || refreshing === true) {
@@ -64,6 +64,7 @@ function PetlistScreen({navigation}) {
         // console.log(response.data.payload[0]);
         setPets(response.data.payload);
         console.log(pets)
+        fetchPets();
 
       } else {
         throw new Error("An error has occurred");
@@ -107,7 +108,7 @@ function PetlistScreen({navigation}) {
                             <TouchableOpacity key={item.id} style={styles.petListingButton} onPress={() => {navigation.navigate('Pet Profile',item)}}>
                               <View style={styles.itemFlex}>
                                       <Text style={styles.buttonTxt}>{item.petname}</Text>
-                                  <TouchableOpacity onPress={deletePet}>
+                                  <TouchableOpacity onPress={() => {deletePet(item.id)} }>
                                       <Image style={styles.deleteIcon} source={require('../assets/deleteIcon.png')} />
                                   </TouchableOpacity>
                               </View>

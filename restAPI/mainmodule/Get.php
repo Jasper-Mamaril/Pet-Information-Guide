@@ -100,7 +100,7 @@ class Get{
     // }
 
     public function get_reminderlist($table, $condition = null){
-        $sql = "SELECT reminders_tbl.petname, reminders_tbl.label, reminders_tbl.repDay, SUBTIME(`time`, '4:00:00') AS timeset FROM `reminders_tbl`";
+        $sql = "SELECT reminders_tbl.*, SUBTIME(`time`, '4:00:00') AS timeset FROM `reminders_tbl`";
         if($condition!=null){
             $sql .= " WHERE {$condition}";
         }

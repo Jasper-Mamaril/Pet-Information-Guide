@@ -14,7 +14,7 @@ const baseURL = 'http://192.168.1.26/Ping/restAPI/';
 
 import dayjs from 'dayjs';
 
-import dismissAllNotificationsAsync from 'expo-notifications';
+// import dismissAllNotificationsAsync from 'expo-notifications';
 
 import Edit from '../screens/ReminderEdit';
 import ReminderAdd from '../screens/ReminderAdd';
@@ -67,6 +67,28 @@ function ReminderListScreen({navigation}) {
     }
   };
 
+  const deleteReminder = async (pet_id) => {
+    try {
+      const response = await axios.post(`${baseURL}deleteReminder/${pet_id}`, {
+
+      });
+      if (response.status === 200 || refreshing === true) {
+        // alert(response.data.payload[0].cooking_time);
+        // console.log(response.data.payload[0]);
+        setReminder(response.data.payload);
+        // console.log(alarms)
+        alert("Successfully Deleted!")
+        fetchReminder();
+       
+
+      } else {
+        throw new Error("An error has occurred");
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  };
+
   // const cancel = async () => {
   //   await Notifications.cancelScheduledNotificationAsync(identifier);
   // }
@@ -109,11 +131,11 @@ function ReminderListScreen({navigation}) {
                                               <Text style={styles.inputTxt}>{item.timeset}</Text>
                                             </View>
                                             <Text style={styles.descTxt}>{item.petname}</Text>
-                                            <TouchableOpacity >
-                                              <TouchableOpacity onPress={Notifications.cancelAllScheduledNotificationsAsync}>
+                                            {/* <TouchableOpacity onPress={() => {deleteReminder(item.id)} }> */}
+                                              <TouchableOpacity onPress={() => {deleteReminder(item.id)} } onPressOut={Notifications.cancelAllScheduledNotificationsAsync}>
                                                   <Image style={styles.deleteIcon} source={require('../assets/deleteIcon.png')} />
                                               </TouchableOpacity>
-                                            </TouchableOpacity>
+                                            {/* </TouchableOpacity> */}
                                               
                                           </View>
                                         <Text style={styles.descTxt}>Repeat:{item.repDay}, {item.label}</Text>

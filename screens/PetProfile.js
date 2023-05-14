@@ -26,30 +26,18 @@ console.log(petDetail);
               </Text>
             </View>
             <View style={styles.flexBox}>
-              <View style={styles.infoSection}>
-              <TouchableOpacity style={styles.ageBox}>
-                <Text style={styles.outputText}> Age </Text>
-                <View style={styles.ageOutput}>
-                <Text style={styles.ageOutputTxt}>6</Text>
-                </View>
-              </TouchableOpacity>
-              </View>
 
               <View style={styles.infoSection}>
               <TouchableOpacity style={styles.ageBox}>
                 <Text style={styles.outputText}> Sex </Text>
-                <View style={styles.ageOutput}>
                   <Text style={styles.ageOutputTxt}> {petDetail.gender}</Text>
-                </View>
               </TouchableOpacity>
               </View>
 
               <View style={styles.infoSection}>
               <TouchableOpacity style={styles.ageBox}>
                 <Text style={styles.outputText}> Wt. </Text>
-                <View style={styles.ageOutput}>
-                <Text > {petDetail.weight}</Text>
-                </View>
+                <Text style={styles.weightOutputTxt}> {petDetail.weight}</Text>
               </TouchableOpacity>
               </View>
             </View>
@@ -68,7 +56,7 @@ console.log(petDetail);
                       </View>
                   </View>
                 </View>
-                <View style={styles.inputButtonBg}>
+                {/* <View style={styles.inputButtonBg}>
                   <View style={styles.itemFlex}>
                     <View style={styles.iconPosition}>
                       <Image style={styles.addIcon} source={require('../assets/petIcon.png')} />
@@ -81,7 +69,7 @@ console.log(petDetail);
                           </SafeAreaView>
                       </View>
                   </View>
-                </View>
+                </View> */}
                 <View style={styles.inputButtonBg}>
                   <View style={styles.itemFlex}>
                     <View style={styles.iconPosition}>
@@ -96,13 +84,13 @@ console.log(petDetail);
                       </View>
                   </View>
                 </View>
-                <View style={styles.editSection}>
+                {/* <View style={styles.editSection}>
                   <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('Edit Pet Info')}>
                     <Text style={styles.editButtonTxt}>
                       Edit Info
                     </Text>
                   </TouchableOpacity>
-                </View>
+                </View> */}
             </View>
           </ScrollView>
         </View>     
@@ -190,11 +178,19 @@ const styles = StyleSheet.create({
   },
   outputText: {
     color: 'white',
-    fontSize: 24,
+    fontSize: 20,
   },
   ageOutputTxt: {
-    fontSize: 56,
+    fontSize: 46,
     color: 'white',
+    marginLeft: -10,
+    marginTop: -5,
+  },
+
+  weightOutputTxt: {
+    fontSize: 30,
+    color: 'white',
+    marginLeft: -10,
   },
   iconPosition: {
     justifyContent: 'center',

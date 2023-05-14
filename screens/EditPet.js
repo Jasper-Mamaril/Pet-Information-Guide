@@ -11,7 +11,6 @@ const baseURL = 'http://192.168.1.26/Ping/restAPI/';
 
 // function EditPetInformation({navigation, route}) {
 const EditPetInformation = ({navigation, route}) => {
-
 const editpet = route.params;
 // console.log(editpet.id);
 
@@ -19,7 +18,7 @@ const editpet = route.params;
     const [weight, onChangeWeight] = React.useState('');
     const [gender, onChangeGender] = React.useState('');
     const [specie, onChangeSpecie] = React.useState('');
-    const [bday, onChangeBday] = React.useState('');
+    // const [bday, onChangeBday] = React.useState('');
     const [note, onChangeNote] = React.useState('');
 
     // const onChangeNameHandler = (name) => {
@@ -27,10 +26,10 @@ const editpet = route.params;
     // };
 
     const onSubmitFormHandler = async (event) => {
-      if (!name.trim() || !weight.trim() || !gender.trim() || !specie.trim() || !bday.trim() || !note.trim() ) {
-        alert("Check input fields!");
-        return;
-      }
+      // if (!name.trim() || !weight.trim() || !gender.trim() || !specie.trim() || !bday.trim() || !note.trim() ) {
+      //   alert("Check input fields!");
+      //   return;
+      // }
       try {
         const response = await axios.post(`${baseURL}editPet`, {
           id: editpet.id,
@@ -67,7 +66,7 @@ const editpet = route.params;
           <View style={styles.card}>
 
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-              <View name={'inputFields'} style={styles.inputFieldSection}>
+              <View style={styles.inputFieldSection}>
                 <KeyboardAvoidingView enabled
                     style={styles.keyboardView}
                     behavior="padding">
@@ -78,13 +77,13 @@ const editpet = route.params;
                         <TextInput
                           style={styles.input}
                           onChangeText={onChangeName}
-                          value={name}
-                          placeholder={editpet.petname}
+                          value={editpet.petname}
+                          // placeholder={editpet.petname}
                          />
                       </View>
                   </View>
                   
-                  <View style={styles.inputFieldContainer}>
+                  {/* <View style={styles.inputFieldContainer}>
                     <Text>Edit Birthday</Text>
                       <View style={styles.inputField}>
                         <TextInput
@@ -93,7 +92,7 @@ const editpet = route.params;
                           value={bday}
                           placeholder={editpet.birthday}/>
                       </View>
-                  </View>
+                  </View> */}
 
                   <View style={styles.inputFieldContainer}>
                     <Text>Edit Species</Text>
@@ -105,7 +104,30 @@ const editpet = route.params;
                           placeholder={editpet.species}/>
                       </View>
                   </View>
-                                <View style={styles.flexRow}>
+
+                  <View style={styles.inputFieldContainer}>
+                    <Text>Edit Weight</Text>
+                      <View style={styles.inputField}>
+                        <TextInput
+                          style={styles.input}
+                          onChangeText={onChangeWeight}
+                          value={weight}
+                          placeholder={editpet.weight + " kg"}/>
+                      </View>
+                  </View>
+
+                  <View style={styles.inputFieldContainer}>
+                    <Text>Edit Gender</Text>
+                      <View style={styles.inputField}>
+                        <TextInput
+                          style={styles.input}
+                          onChangeText={onChangeGender}
+                          value={gender}
+                          placeholder={editpet.gender}
+                          />
+                      </View>
+                  </View>
+                                {/* <View style={styles.flexRow}>
                                   <View style={styles.genderFieldContainer}>
                                       <Text>Edit Gender</Text>
                                         <View style={styles.genderInputField}>
@@ -128,7 +150,7 @@ const editpet = route.params;
                                           placeholder={editpet.weight + " kg"}/>
                                       </View>
                                   </View>
-                    </View>
+                    </View> */}
 
                   
                   <View style={styles.inputFieldContainer}>

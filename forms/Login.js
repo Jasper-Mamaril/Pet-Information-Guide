@@ -34,8 +34,10 @@ function LoginScreen({navigation}) {
           // setPassword('');
           // return navigation.navigate(ROUTES.LOGIN);
           // storeUserID(response.data.payload.id);
-  
+          
           alert("Successfully Logged in!");
+          this.textInput.clear();
+          this.textInput2.clear();
           return navigation.navigate('Logged in')
   
         } else {
@@ -62,6 +64,7 @@ function LoginScreen({navigation}) {
                     <View style={styles.inputFieldContainer}>
                         <View style={styles.inputField}>
                           <TextInput
+                            ref={input => { this.textInput = input }}
                             style={styles.input}
                             onChangeText={onChangeUsername}
                             value={username}
@@ -78,6 +81,7 @@ function LoginScreen({navigation}) {
                     <View style={styles.inputFieldContainer}>
                         <View style={styles.inputField}>
                           <TextInput
+                            ref={input => { this.textInput2 = input }}
                             style={styles.input}
                             secureTextEntry={true}
                             onChangeText={onChangePass}

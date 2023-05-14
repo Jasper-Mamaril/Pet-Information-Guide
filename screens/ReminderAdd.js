@@ -46,17 +46,15 @@ const day = [
   {key:'1', value:'Yes'},
   {key:'2', value:'No'},
 ];
-const list = [
+
+const pets = [
   {key:'1', value:'Kim'},
   {key:'2', value:'Ant'},
   {key:'3', value:'Jmie'},
 ];
 
-
-
 function AddReminderScreen({navigation}) {
   // const [today, setDate] = useState(dayjs());
-
   const [expoPushToken, setExpoPushToken] = useState('');
   const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
@@ -104,27 +102,12 @@ function AddReminderScreen({navigation}) {
   const showTimepicker = () => {
     showMode('time');
   };
- 
-
-  useFocusEffect(
-    React.useCallback(() => {
-      fetchPetname();
-      // console.log("naload");
-      return () => {
-        fetchPetname();
-        // console.log("umalis");
-      };
-    }, [])
-  );
-
-  const [petnameList, setPetnameList] = useState([]);
-  listOfNames = []
 
   const schedulePushNotification = async () => {
     const hour = date.getHours(); // must be between 0-23
     const minute = date.getMinutes();
-    const petname = "Mayumi";
-    const label = "Meal";
+    // const petname = "Mayumi";
+    // const label = "Meal";
       await Notifications.scheduleNotificationAsync({
       content: {
         title: "Ping!",
@@ -137,34 +120,6 @@ function AddReminderScreen({navigation}) {
     }
     });
   }
-
-  const fetchPetname = async () => {
-    try {
-      const response = await axios.post(`${baseURL}getPetnameList`, {
-
-      });
-      if (response.status === 200 || refreshing === true) {
-        // console.log(response.data.payload[0]);
-        // setPetnameList(response.data.payload);
-        // result = Object.values(petnameList);
-        // console.log(result)
-        const objectArray = Object.entries(response.data.payload);
-
-        objectArray.forEach(([key, value]) => {
-          // console.log(key); // 'one'
-          // console.log(value.petname); // 1
-          // setPetnameList(petnameList, value.petname);
-          listOfNames.push(value.petname);
-        });
-        console.log(listOfNames);
-
-      } else {
-        throw new Error("An error has occurred");
-      }
-    } catch (error) {
-
-    }
-  };
 
   const combine = async () => {
     onSubmitFormHandler();
@@ -202,6 +157,50 @@ function AddReminderScreen({navigation}) {
       }
     } catch (error) {
       alert(error);
+    }
+  };
+
+  // fetch Petnamelist
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchPetname();
+      // console.log("naload");
+      return () => {
+        fetchPetname();
+        // console.log("umalis");
+      };
+    }, [])
+  );
+
+//  const [petlist,  setPetnameList] = useState([]);
+  listOfNames = []
+
+  const fetchPetname = async () => {
+    try {
+      const response = await axios.post(`${baseURL}getPetnameList`, {
+
+      });
+      if (response.status === 200 || refreshing === true) {
+        // console.log(response.data.payload);
+        // setPetnameList(response.data.payload);
+        // result = Object.values(petnameList);
+        // console.log(result)
+
+              const objectArray = Object.entries(response.data.payload);
+
+              objectArray.forEach(([key, value]) => {
+                // console.log(key); // 'one'
+                // console.log(value.petname); // 1
+                // setPetnameList(petnameList, value.petname);
+                listOfNames.push(value.petname);
+              });
+              console.log(listOfNames);
+
+      } else {
+        throw new Error("An error has occurred");
+      }
+    } catch (error) {
+
     }
   };
 
@@ -249,6 +248,18 @@ function AddReminderScreen({navigation}) {
                   </View>
                  </View>
 
+                    <View style={styles.label}>
+                      <Text>Petname</Text>
+                          <SelectList 
+                            onSelect={() => console.log(selectedPet)}
+                            setSelected={(val) => setPetname(val)}
+                            data={listOfNames}  
+                            save="value"
+                            search={false}
+                            placeholder='Select Pet:'
+                          />
+                    </View>     
+
                     <View style={styles.daypicker}>
                     <Text>Repeat</Text>
                         <SelectList 
@@ -258,19 +269,9 @@ function AddReminderScreen({navigation}) {
                           onSelect={() => console.log(selectedDay)}
                           save="value"
                           search={false} 
+                          placeholder='Repeat Daily?'
                         />
                     </View>
-
-                    <View style={styles.label}>
-                      <Text>Petname</Text>
-                          <SelectList 
-                            onSelect={() => console.log(selectedPet)}
-                            setSelected={(val) => setPetname(val)}
-                            data={listOfNames}  
-                            save="value"
-                            search={false}
-                          />
-                    </View>     
 
                     <View style={styles.label}>
                       <Text>Label</Text>
@@ -280,6 +281,7 @@ function AddReminderScreen({navigation}) {
                         data={label}  
                         save="value"
                         search={false}
+                        placeholder='Select Label:'
                       />
 
                     </View>

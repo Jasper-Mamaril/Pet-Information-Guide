@@ -17,7 +17,7 @@ import NewPetScreen from '../screens/NewPet';
 function PetlistScreen({navigation}) {
   // pull data
   const [pets, setPets] = useState([]);
-  const [refreshing, setRefreshing] = useState(false);
+  // const [refreshing, setRefreshing] = useState(false);
   // let petslist = [
   //   { id: 1, name: 'Yuumi' },
   //   { id: 2, name: 'Aya' },
@@ -120,7 +120,9 @@ function PetlistScreen({navigation}) {
               )}}/>
           
         </View>
-              
+              <View style={styles.container}>
+                <Text>End of List</Text>
+              </View>
           </ScrollView>
         </View>     
     </View>
@@ -148,7 +150,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    // backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   },

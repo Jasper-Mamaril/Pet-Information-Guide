@@ -4,6 +4,7 @@ import { StyleSheet, Text, View, TouchableOpacity, Image, TextInput, KeyboardAvo
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import {DateTimePicker, DateTimePickerAndroid} from '@react-native-community/datetimepicker';
 
 import axios from 'axios';
 const baseURL = 'http://192.168.1.26/Ping/restAPI/';
@@ -13,18 +14,18 @@ function AddNewPet({navigation}) {
     const [weight, onChangeWeight] = React.useState('');
     const [gender, onChangeGender] = React.useState('');
     const [specie, onChangeSpecie] = React.useState('');
-    const [bday, onChangeBday] = React.useState('');
+    // const [bday, setDate] = React.useState(new Date());
     const [note, onChangeNote] = React.useState('');
 
     const onSubmitFormHandler = async (event) => {
-      if (!name.trim() || !weight.trim() || !gender.trim() || !specie.trim() || !bday.trim()){
+      if (!name.trim() || !weight.trim() || !gender.trim() || !specie.trim()){
         alert("Check input fields!");
         return;
       }
       try {
         const response = await axios.post(`${baseURL}insertNewPet`, {
           petname : name,
-          birthday : bday,
+          // birthday : bday,
           gender : gender,
           weight : weight,
           species : specie,
@@ -49,6 +50,25 @@ function AddNewPet({navigation}) {
       }
     };
 
+    // const onChange = (event, selectedDate) => {
+    //   const currentDate = selectedDate;
+    //   setDate(currentDate);
+    // };
+  
+    // const showMode = (currentMode) => {
+    //   DateTimePickerAndroid.open({
+    //     value: bday,
+    //     display: "spinner",
+    //     onChange,
+    //     // mode: currentMode,
+    //   });
+    // };
+  
+    // const showDatepicker = () => {
+    //   showMode('date');
+    // };
+  
+
     return (
       <View style={styles.container}>
         <Image style={styles.bgImage} source={require('../assets/bgImage.jpg')} />
@@ -71,16 +91,22 @@ function AddNewPet({navigation}) {
                       </View>
                   </View>
                   
-                  <View style={styles.inputFieldContainer}>
+                  {/* <View style={styles.inputFieldContainer}>
                     <Text>Birthday</Text>
                       <View style={styles.inputField}>
                         <TextInput
                           style={styles.input}
-                          onChangeText={onChangeBday}
+                          onChangeText={setDate}
                           value={bday}
-                          placeholder="Birthday"/>
+                          placeholder="Birthday"
+                          editable={false} selectTextOnFocus={false}/>
+                           <Text>{bday.toLocaleDateString()}</Text>
+                       
                       </View>
-                  </View>
+                      <TouchableOpacity style={styles.timepickerButton} onPress={showDatepicker} title="Set Birthday">
+                        <Text style={styles.timePickerbuttonTxt}>Set Birthday</Text>
+                      </TouchableOpacity>
+                  </View> */}
 
                   <View style={styles.inputFieldContainer}>
                     <Text>Species</Text>
@@ -92,7 +118,29 @@ function AddNewPet({navigation}) {
                           placeholder="Specie"/>
                       </View>
                   </View>
-                                <View style={styles.flexRow}>
+
+                  <View style={styles.inputFieldContainer}>
+                    <Text>Gender</Text>
+                      <View style={styles.inputField}>
+                        <TextInput
+                          style={styles.input}
+                          onChangeText={onChangeGender}
+                          value={gender}
+                          placeholder="m/f"/>
+                      </View>
+                  </View>
+
+                  <View style={styles.inputFieldContainer}>
+                    <Text>Weight</Text>
+                      <View style={styles.inputField}>
+                        <TextInput
+                          style={styles.input}
+                          onChangeText={onChangeWeight}
+                          value={weight}
+                          placeholder="(kg)"/>
+                      </View>
+                  </View>
+                                {/* <View style={styles.flexRow}>
                                   <View style={styles.genderFieldContainer}>
                                       <Text>Gender</Text>
                                         <View style={styles.genderInputField}>
@@ -114,7 +162,7 @@ function AddNewPet({navigation}) {
                                           placeholder="(kg)"/>
                                       </View>
                                   </View>
-                    </View>
+                                </View> */}
 
                   
                   <View style={styles.inputFieldContainer}>

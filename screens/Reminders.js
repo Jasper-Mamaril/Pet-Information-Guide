@@ -145,6 +145,10 @@ function ReminderListScreen({navigation}) {
                   </View>
                 </View>     
               )}}/>
+
+              <View style={styles.container2}>
+                <Text >End of Reminders</Text>
+              </View>
           
           </View>
         </View>
@@ -182,9 +186,16 @@ export default function Reminders() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    // backgroundColor: '#fff',
+  },
+  container2: {
+    marginTop: 10,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    // backgroundColor: '#fff',
   },
   descTxt: {
     color: 'white',
@@ -323,5 +334,9 @@ const styles = StyleSheet.create({
   },
   wholeList: {
     marginBottom: 40,
-  }
+  },
+  // endText: {
+  //   flex:1,
+  //   justifyContent: 'center',
+  // }
 });

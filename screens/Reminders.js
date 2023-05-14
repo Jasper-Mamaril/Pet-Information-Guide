@@ -16,7 +16,7 @@ import dayjs from 'dayjs';
 
 // import dismissAllNotificationsAsync from 'expo-notifications';
 
-import Edit from '../screens/ReminderEdit';
+import EditReminder from '../screens/ReminderEdit';
 import ReminderAdd from '../screens/ReminderAdd';
 
 function ReminderListScreen({navigation}) {
@@ -119,11 +119,11 @@ function ReminderListScreen({navigation}) {
 
                   <View style={styles.inputButtonBg}>
                   <View style={styles.itemFlex}>
-                          <View style={styles.iconPosition}>
+                          {/* <View style={styles.iconPosition}>
                             <TouchableOpacity key={item.id} onPress={() => navigation.navigate('Edit Reminder', item)}>
                               <Image style={styles.editIcon} source={require('../assets/editIcon.png')} />
                             </TouchableOpacity>
-                          </View>
+                          </View> */}
                                 <View style={styles.inputContainer}>
                                     <View style={styles.inputButton}>
                                           <View style={styles.itemFlex}>
@@ -145,7 +145,10 @@ function ReminderListScreen({navigation}) {
                   </View>
                 </View>     
               )}}/>
-          
+
+                  <View style={styles.container2}>
+                        <Text >End of Reminders</Text>
+                      </View>
           </View>
         </View>
                 
@@ -173,7 +176,7 @@ export default function Reminders() {
   return (
     <RemindersStack.Navigator>
       <RemindersStack.Screen options={{ headerShown: false }} name="Reminders" component={ReminderListScreen} />
-      <RemindersStack.Screen options={{ headerShown: true, headerTransparent: true, }} name="Edit Reminder" component={Edit} />
+      <RemindersStack.Screen options={{ headerShown: true, headerTransparent: true, }} name="Edit Reminder" component={EditReminder} />
       <RemindersStack.Screen options={{ headerShown: true, headerTransparent: true, }} name="Add Reminder" component={ReminderAdd} />
     </RemindersStack.Navigator>
   );
@@ -185,6 +188,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  container2: {
+    marginTop: 10,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    // backgroundColor: '#fff',
   },
   descTxt: {
     color: 'white',

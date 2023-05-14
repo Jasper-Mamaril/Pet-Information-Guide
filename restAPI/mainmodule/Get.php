@@ -230,6 +230,37 @@ class Get{
             return $this->gm->returnPayload(null, "failed", "failed to retrieve data", $res['code']);
         }
 
+        public function get_petinfo($table, $condition = null){
+
+            
+            $sql = "SELECT * FROM $table";
+            if($condition!=null){
+                $sql .= " WHERE {$condition}";
+            }
+          
+            $res = $this->gm->executeQuery($sql);
+            if($res['code']==200){
+                return $this->gm->returnPayload($res['data'], "success", "Succesfully retieved data", $res['code']);
+            }
+    
+            return $this->gm->returnPayload(null, "failed", "failed to retrieve data", $res['code']);
+        }
+
+        public function get_reminder($table, $condition = null){
+
+            
+            $sql = "SELECT * FROM $table";
+            if($condition!=null){
+                $sql .= " WHERE {$condition}";
+            }
+          
+            $res = $this->gm->executeQuery($sql);
+            if($res['code']==200){
+                return $this->gm->returnPayload($res['data'], "success", "Succesfully retieved data", $res['code']);
+            }
+    
+            return $this->gm->returnPayload(null, "failed", "failed to retrieve data", $res['code']);
+        }
 
 
 

@@ -33,9 +33,12 @@ switch($_SERVER['REQUEST_METHOD']){
             // break;
 
 
-
             case 'getPetInfo':
-                echo json_encode($get->get_common('petinfo_tbl'));
+                echo json_encode($get->get_petinfo('petinfo_tbl',"id = '$req[1]'"));
+            break;
+
+            case 'getReminderAlarm':
+                echo json_encode($get->get_reminder('reminders_tbl',"id = '$req[1]'"));
             break;
 
             case 'getPetlist':

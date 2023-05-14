@@ -35,6 +35,10 @@ function PetlistScreen({navigation}) {
     }, [])
   );
 
+  // useEffect(() => {
+  //   fetchPets();
+  // })
+
   const fetchPets = async () => {
     try {
       const response = await axios.post(`${baseURL}getPetlist`, {
@@ -118,7 +122,9 @@ function PetlistScreen({navigation}) {
                     </View>
                     </View>  
               )}}/>
-          
+           <View style={styles.container2}>
+                        <Text >End of List</Text>
+                      </View>
         </View>
               
           </ScrollView>
@@ -151,6 +157,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  container2: {
+    marginTop: 10,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    // backgroundColor: '#fff',
   },
   bgImage: {
     width: 400,

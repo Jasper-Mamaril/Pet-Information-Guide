@@ -17,14 +17,14 @@ function AddNewPet({navigation}) {
     const [note, onChangeNote] = React.useState('');
 
     const onSubmitFormHandler = async (event) => {
-      if (!name.trim() || !weight.trim() || !gender.trim() || !specie.trim() || !bday.trim()){
+      if (!name.trim() || !weight.trim() || !gender.trim() || !specie.trim()){
         alert("Check input fields!");
         return;
       }
       try {
         const response = await axios.post(`${baseURL}insertNewPet`, {
           petname : name,
-          birthday : bday,
+          // birthday : bday,
           gender : gender,
           weight : weight,
           species : specie,
@@ -71,7 +71,7 @@ function AddNewPet({navigation}) {
                       </View>
                   </View>
                   
-                  <View style={styles.inputFieldContainer}>
+                  {/* <View style={styles.inputFieldContainer}>
                     <Text>Birthday</Text>
                       <View style={styles.inputField}>
                         <TextInput
@@ -80,7 +80,7 @@ function AddNewPet({navigation}) {
                           value={bday}
                           placeholder="Birthday"/>
                       </View>
-                  </View>
+                  </View> */}
 
                   <View style={styles.inputFieldContainer}>
                     <Text>Species</Text>

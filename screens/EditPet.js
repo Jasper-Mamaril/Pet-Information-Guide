@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useFocusEffect } from "@react-navigation/native";
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TouchableOpacity, Image, TextInput, KeyboardAvoidingView, ScrollView } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
@@ -15,22 +16,66 @@ const EditPetInformation = ({navigation, route}) => {
 const editpet = route.params;
 // console.log(editpet.id);
 
-    const [name, onChangeName] = React.useState('');
-    const [weight, onChangeWeight] = React.useState('');
-    const [gender, onChangeGender] = React.useState('');
-    const [specie, onChangeSpecie] = React.useState('');
-    const [bday, onChangeBday] = React.useState('');
-    const [note, onChangeNote] = React.useState('');
+    const [name, setName] = React.useState();
+    const [weight, setWeight] = React.useState();
+    const [gender,  setGender] = React.useState();
+    const [specie,  setSpecie] = React.useState();
+    // const [bday, onChangeBday] = React.useState('');
+    const [note,  setNote] = React.useState();
+    const [petinfo, setPetinfo] = React.useState([]);
 
-    // const onChangeNameHandler = (name) => {
-    //   onChangeName(name);
-    // };
+    useFocusEffect(
+      React.useCallback(() => {
+        fetchPetInfo();
+        // console.log("naload");
+        return () => {
+          fetchPetInfo();
+          // console.log("umalis");
+        };
+      }, [])
+    );
+
+    const onChangeName = (name) => {
+      setName(name);
+    };
+    const onChangeWeight = (weight) => {
+      setWeight(weight);
+    };
+    const onChangeSpecie = (specie) => {
+      setSpecie(specie);
+    };
+    const onChangeGender = (gender) => {
+      setGender(gender);
+    };
+    const onChangeNote = (note) => {
+      setNote(note);
+    };
+
+    const fetchPetInfo = async () => {
+
+      try {
+        const response = await axios.post(`${baseURL}getPetInfo/${editpet.id}`, {
+  
+        });
+        if (response.status === 200 || refreshing === true) {
+          // alert(response.data.payload[0].cooking_time);
+          // console.log(response.data.payload);
+          setPetinfo(response.data.payload[0]);
+          console.log(petinfo)
+  
+        } else {
+          throw new Error("An error has occurred");
+        }
+      } catch (error) {
+  
+      }
+    };
 
     const onSubmitFormHandler = async (event) => {
-      if (!name.trim() || !weight.trim() || !gender.trim() || !specie.trim() || !bday.trim() || !note.trim() ) {
-        alert("Check input fields!");
-        return;
-      }
+      // if (!name.trim() || !weight.trim() || !gender.trim() || !specie.trim() || !bday.trim() || !note.trim() ) {
+      //   alert("Check input fields!");
+      //   return;
+      // }
       try {
         const response = await axios.post(`${baseURL}editPet`, {
           id: editpet.id,
@@ -38,7 +83,7 @@ const editpet = route.params;
           weight : weight,
           gender : gender,
           species : specie,
-          birthday : bday,
+          // birthday : bday,
           notes : note,
         });
         if (response.status === 200) {
@@ -79,12 +124,13 @@ const editpet = route.params;
                           style={styles.input}
                           onChangeText={onChangeName}
                           value={name}
-                          placeholder={editpet.petname}
+                          placeholder={petinfo.petname}
+                          placeholderTextColor="#000"
                          />
                       </View>
                   </View>
                   
-                  <View style={styles.inputFieldContainer}>
+                  {/* <View style={styles.inputFieldContainer}>
                     <Text>Edit Birthday</Text>
                       <View style={styles.inputField}>
                         <TextInput
@@ -93,7 +139,7 @@ const editpet = route.params;
                           value={bday}
                           placeholder={editpet.birthday}/>
                       </View>
-                  </View>
+                  </View> */}
 
                   <View style={styles.inputFieldContainer}>
                     <Text>Edit Species</Text>
@@ -102,33 +148,38 @@ const editpet = route.params;
                           style={styles.input}
                           onChangeText={onChangeSpecie}
                           value={specie}
-                          placeholder={editpet.species}/>
+                          placeholder={petinfo.species}
+                          placeholderTextColor="#000"
+                          />
                       </View>
                   </View>
-                                <View style={styles.flexRow}>
-                                  <View style={styles.genderFieldContainer}>
-                                      <Text>Edit Gender</Text>
-                                        <View style={styles.genderInputField}>
-                                          <TextInput
-                                            style={styles.input}
-                                            onChangeText={onChangeGender}
-                                            value={gender}
-                                            placeholder={editpet.gender}
-                                            />
-                                        </View>
-                                    </View>
 
-                                  <View style={styles.wtFieldContainer}>
-                                    <Text>Edit Weight</Text>
-                                      <View style={styles.wtInputField}>
-                                        <TextInput
-                                          style={styles.input}
-                                          onChangeText={onChangeWeight}
-                                          value={weight}
-                                          placeholder={editpet.weight + " kg"}/>
-                                      </View>
-                                  </View>
-                    </View>
+                  <View style={styles.inputFieldContainer}>
+                   <Text>Edit Gender</Text>
+                      <View style={styles.inputField}>
+                        <TextInput
+                          style={styles.input}
+                          onChangeText={onChangeGender}
+                          value={gender}
+                          placeholder={petinfo.gender}
+                          placeholderTextColor="#000"
+                          />
+                      </View>
+                  </View>
+
+                  <View style={styles.inputFieldContainer}>
+                    <Text>Edit Weight</Text>
+                      <View style={styles.inputField}>
+                        <TextInput
+                          style={styles.input}
+                          onChangeText={onChangeWeight}
+                          value={weight}
+                          placeholder={petinfo.weight + " kg"}
+                          placeholderTextColor="#000"
+                          />
+                      </View>
+                  </View>
+                                
 
                   
                   <View style={styles.inputFieldContainer}>
@@ -138,7 +189,9 @@ const editpet = route.params;
                           style={styles.input}
                           onChangeText={onChangeNote}
                           value={note}
-                          placeholder={editpet.notes}/>
+                          placeholder={petinfo.notes}
+                          placeholderTextColor="#000"
+                          />
                       </View>
                   </View>
                 </KeyboardAvoidingView>

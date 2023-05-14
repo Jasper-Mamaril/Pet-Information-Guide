@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useFocusEffect } from "@react-navigation/native";
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, Button, FlatList } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -18,20 +19,10 @@ Notifications.setNotificationHandler({
   }),
 });
 
-  // export const dismiss = async () => {
-  //   Notifications.setNotificationHandler({
-  //     handleNotification: async () => ({
-  //       shouldShowAlert: false,
-  //       shouldPlaySound: false,
-  //       shouldSetBadge: false,
-  //     })
-  //   });
-  // }
-
 import axios from 'axios';
 const baseURL = 'http://192.168.1.26/Ping/restAPI/';
 
-import dayjs from 'dayjs';
+// import dayjs from 'dayjs';
 // import Reminders from '../screens/Reminders';
 
 const label = [
@@ -45,7 +36,7 @@ const day = [
   {key:'1', value:'Yes'},
   {key:'2', value:'No'},
 ];
-const pet = [
+const list = [
   {key:'1', value:'Kim'},
   {key:'2', value:'Ant'},
   {key:'3', value:'Jmie'},
@@ -53,11 +44,11 @@ const pet = [
 
 
 
-// function ReminderEdit({navigation}) {
-const ReminderEdit = ({navigation, route}) => {
+// function AddReminderScreen({navigation}) {
+  // const [today, setDate] = useState(dayjs());
+  const EditReminder = ({navigation, route}) => {
 
-    const editalarm = route.params;
-    console.log(editalarm.id);
+    const reminder = route.params;
 
   const [expoPushToken, setExpoPushToken] = useState('');
   const [notification, setNotification] = useState(false);
@@ -107,20 +98,20 @@ const ReminderEdit = ({navigation, route}) => {
     showMode('time');
   };
  
-  
-  useEffect(() =>{
-    // const interval = setInterval(()=> {
-    //   setDate(dayjs());
-    // }, 1000 * 1);
 
-    // return () => clearInterval(interval);
-    fetchPetname();
-  }, []) 
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchPetname();
+      // console.log("naload");
+      return () => {
+        fetchPetname();
+        // console.log("umalis");
+      };
+    }, [])
+  );
 
   const [petnameList, setPetnameList] = useState([]);
   listOfNames = []
-
-  
 
   const schedulePushNotification = async () => {
     const hour = date.getHours(); // must be between 0-23
@@ -207,6 +198,52 @@ const ReminderEdit = ({navigation, route}) => {
     }
   };
 
+  const [alarm, setAlarm] = React.useState([]);
+
+    useFocusEffect(
+      React.useCallback(() => {
+        fetchReminder();
+        // console.log("naload");
+        return () => {
+          fetchReminder();
+          // console.log("umalis");
+        };
+      }, [])
+    );
+
+    const onChangePetname = (petname) => {
+      setPetname(petname);
+    };
+    const onChangeRepDay = (repDay) => {
+      setDay(repDay);
+    };
+    const onChangeLabel = (label) => {
+      setLabel(label);
+    };
+    const onChangeGender = (time) => {
+      setTime(time);
+    };
+
+    const fetchReminder = async () => {
+
+      try {
+        const response = await axios.post(`${baseURL}getReminderAlarm/${reminder.id}`, {
+  
+        });
+        if (response.status === 200 || refreshing === true) {
+          // alert(response.data.payload[0].cooking_time);
+          console.log(response.data.payload);
+          // setAlarm(response.data.payload[0]);
+          // console.log(alarm)
+  
+        } else {
+          throw new Error("An error has occurred");
+        }
+      } catch (error) {
+  
+      }
+    };
+
   return (
     <View style={styles.container}>
       <Image style={styles.bgImage} source={require('../assets/bgImage.jpg')} />
@@ -240,7 +277,23 @@ const ReminderEdit = ({navigation, route}) => {
 
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
               <View style={styles.reminderListContainer}>
-                 <View>
+                 
+
+                   
+
+                    <View style={styles.label}>
+                      <Text>Petname</Text>
+                          <SelectList 
+                            onSelect={() => console.log(selectedPet)}
+                            setSelected={selectedPet} 
+                            data={listOfNames}  
+                            save="value"
+                            search={false}
+                            placeholder='Select pet'
+                          />
+                    </View>    
+
+                    <View>
                  <View style={styles.timepickerContainer}>
                         <Text>Reminder Time</Text>
                       <View style={styles.timepicker}>
@@ -249,39 +302,30 @@ const ReminderEdit = ({navigation, route}) => {
                           </TouchableOpacity> 
                       </View>
                   </View>
-                 </View>
+                 </View> 
 
                     <View style={styles.daypicker}>
                     <Text>Repeat</Text>
                         <SelectList 
-                          setSelected={(val) => setDay(val)}
-                          data={day}
+                          setSelected={(val) => onChangeRepDay(val)}
+                          data={selectedDay}
                           label="Remind on:"
                           onSelect={() => console.log(selectedDay)}
                           save="value"
                           search={false} 
+                          placeholder='Repeat Daily?'
                         />
                     </View>
-
-                    <View style={styles.label}>
-                      <Text>Petname</Text>
-                          <SelectList 
-                            onSelect={() => console.log(selectedPet)}
-                            setSelected={(val) => setPetname(val)}
-                            data={listOfNames}  
-                            save="value"
-                            search={false}
-                          />
-                    </View>     
 
                     <View style={styles.label}>
                       <Text>Label</Text>
                       <SelectList 
                         onSelect={() => console.log(selectedlabel)}
-                        setSelected={(val) => setLabel(val)}
-                        data={label}  
+                        setSelected={(val) => onChangeLabel(val)}
+                        data={selectedlabel}  
                         save="value"
                         search={false}
+                        placeholder='Select label'
                       />
 
                     </View>
@@ -331,7 +375,7 @@ async function registerForPushNotificationsAsync() {
   return token;
 }
 
-export default ReminderEdit;
+export default EditReminder;
 
 const styles = StyleSheet.create({
   container: {
@@ -477,6 +521,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   timepickerContainer: {
+    marginTop: 10,
     width: '90%',
   },
   scrollView: {

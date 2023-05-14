@@ -238,7 +238,23 @@ function AddReminderScreen({navigation}) {
 
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
               <View style={styles.reminderListContainer}>
-                 <View>
+                 
+
+                   
+
+                    <View style={styles.label}>
+                      <Text>Petname</Text>
+                          <SelectList 
+                            onSelect={() => console.log(selectedPet)}
+                            setSelected={(val) => setPetname(val)}
+                            data={listOfNames}  
+                            save="value"
+                            search={false}
+                            placeholder='Select pet'
+                          />
+                    </View>    
+
+                    <View>
                  <View style={styles.timepickerContainer}>
                         <Text>Reminder Time</Text>
                       <View style={styles.timepicker}>
@@ -247,7 +263,7 @@ function AddReminderScreen({navigation}) {
                           </TouchableOpacity> 
                       </View>
                   </View>
-                 </View>
+                 </View> 
 
                     <View style={styles.daypicker}>
                     <Text>Repeat</Text>
@@ -258,19 +274,9 @@ function AddReminderScreen({navigation}) {
                           onSelect={() => console.log(selectedDay)}
                           save="value"
                           search={false} 
+                          placeholder='Repeat Daily?'
                         />
                     </View>
-
-                    <View style={styles.label}>
-                      <Text>Petname</Text>
-                          <SelectList 
-                            onSelect={() => console.log(selectedPet)}
-                            setSelected={(val) => setPetname(val)}
-                            data={listOfNames}  
-                            save="value"
-                            search={false}
-                          />
-                    </View>     
 
                     <View style={styles.label}>
                       <Text>Label</Text>
@@ -280,6 +286,7 @@ function AddReminderScreen({navigation}) {
                         data={label}  
                         save="value"
                         search={false}
+                        placeholder='Select label'
                       />
 
                     </View>
@@ -482,6 +489,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   timepickerContainer: {
+    marginTop: 10,
     width: '90%',
   },
   scrollView: {

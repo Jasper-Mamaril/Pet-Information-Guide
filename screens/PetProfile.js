@@ -26,14 +26,14 @@ console.log(petDetail);
               </Text>
             </View>
             <View style={styles.flexBox}>
-              <View style={styles.infoSection}>
+              {/* <View style={styles.infoSection}>
               <TouchableOpacity style={styles.ageBox}>
                 <Text style={styles.outputText}> Age </Text>
                 <View style={styles.ageOutput}>
                 <Text style={styles.ageOutputTxt}>6</Text>
                 </View>
               </TouchableOpacity>
-              </View>
+              </View> */}
 
               <View style={styles.infoSection}>
               <TouchableOpacity style={styles.ageBox}>
@@ -47,8 +47,8 @@ console.log(petDetail);
               <View style={styles.infoSection}>
               <TouchableOpacity style={styles.ageBox}>
                 <Text style={styles.outputText}> Wt. </Text>
-                <View style={styles.ageOutput}>
-                <Text > {petDetail.weight}</Text>
+                <View >
+                <Text style={styles.weightOutputTxt}> {petDetail.weight}</Text>
                 </View>
               </TouchableOpacity>
               </View>
@@ -68,7 +68,7 @@ console.log(petDetail);
                       </View>
                   </View>
                 </View>
-                <View style={styles.inputButtonBg}>
+                {/* <View style={styles.inputButtonBg}>
                   <View style={styles.itemFlex}>
                     <View style={styles.iconPosition}>
                       <Image style={styles.addIcon} source={require('../assets/petIcon.png')} />
@@ -81,7 +81,7 @@ console.log(petDetail);
                           </SafeAreaView>
                       </View>
                   </View>
-                </View>
+                </View> */}
                 <View style={styles.inputButtonBg}>
                   <View style={styles.itemFlex}>
                     <View style={styles.iconPosition}>
@@ -96,13 +96,13 @@ console.log(petDetail);
                       </View>
                   </View>
                 </View>
-                <View style={styles.editSection}>
+                {/* <View style={styles.editSection}>
                   <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('Edit Pet Info')}>
                     <Text style={styles.editButtonTxt}>
                       Edit Info
                     </Text>
                   </TouchableOpacity>
-                </View>
+                </View> */}
             </View>
           </ScrollView>
         </View>     
@@ -174,6 +174,7 @@ const styles = StyleSheet.create({
     margin: 20,
     position: 'relative',
     top: 5,
+    elevation: 10,
   },
   petname: {
     marginTop: 40,
@@ -187,14 +188,23 @@ const styles = StyleSheet.create({
     width: 90,
     borderRadius: 20,
     alignItems: 'center',
+    elevation: 10,
   },
   outputText: {
     color: 'white',
     fontSize: 24,
   },
   ageOutputTxt: {
-    fontSize: 56,
+    fontSize: 46,
     color: 'white',
+    marginLeft: -10,
+    marginTop: -5,
+  },
+
+  weightOutputTxt: {
+    fontSize: 30,
+    color: 'white',
+    marginLeft: -10,
   },
   iconPosition: {
     justifyContent: 'center',
@@ -216,6 +226,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F98E6A',
     alignItems: 'flex-end',
     borderRadius: 10,
+    elevation: 10,
   },
   inputContainer: {
     width: '85%',
